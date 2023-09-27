@@ -1,0 +1,7 @@
+*.DS_Store
+*.pyc
+DS_Store
+.venv
+
+
+control/gps
