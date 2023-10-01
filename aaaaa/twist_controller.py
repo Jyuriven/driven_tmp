@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import time
 import rospy
 from yaw_controller import YawController
 from pid import PID
@@ -28,7 +28,7 @@ class Controller(object):
         self.accel_limit = accel_limit
         self.wheel_radius = wheel_radius
 
-        self.last_time = rospy.get_time()
+        self.last_time = time.time()
         self.last_vel = 0.0
 
 
@@ -65,23 +65,20 @@ class Controller(object):
         #current_vel = self.vel_lpf.filt(current_vel)
 
         ### 아두이노에 넣을 각 
-        #print(angular)
         steering = self.yaw_controller.get_steering(current_vel, linear_vel, angular)
-        print(steering)
         #목표속도와 현재 속도 오차 연산
-        # linear_vel = 
         vel_error = linear_vel - current_vel #선속도가 아니라 목표 속도가 맞는거같음.
         self.last_vel = current_vel
 
-        current_time = rospy.get_time()
+        current_time = time.time()
         if current_time != self.last_time:
                 sample_time = current_time - self.last_time
         else:
-                sleep(1)
+                time.sleep(1)
                 sample_time = current_time - self.last_time
 
         throttle = self.throttle_controller.step(vel_error, sample_time)
-        
+        print("throttle: ",throttle)
         
         # #목표 속도가 0이 되면 풀 브레이크
         # if linear_vel == 0.0 and vel_error < 3:
@@ -103,7 +100,6 @@ class Controller(object):
         #         brake = abs(decel) * self.vehicle_mass * self.wheel_radius  # Torque (N*m)
         
 
-        print("Jetson2Ardu Control DATA : ")
         print("Jetson2Ardu Control DATA ( THROTTLE ) : %d",throttle )
         print("Jetson2Ardu Control DATA ( BREAK ) : %f", brake)
         print("Jetson2Ardu Control DATA ( STEERING ) : %f", steering )

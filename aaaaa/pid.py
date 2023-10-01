@@ -1,5 +1,5 @@
 MIN_NUM = float('-inf')
-MAX_NUM = float('inf')
+MAX_NUM = 0.0
 
 class PID(object):
     def __init__(self, kp, ki, kd, mn=MIN_NUM, mx=MAX_NUM):
@@ -21,6 +21,8 @@ class PID(object):
 
         val = self.kp * error + self.ki * integral + self.kd * derivative
         print("val : {}".format(val))
+        return val
+    
         if val > self.max:
             val = self.max
         elif val < self.min:
@@ -29,5 +31,5 @@ class PID(object):
             self.int_val = integral
         self.last_error = error
 
-
+        print("val:")
         return val
